@@ -10,10 +10,17 @@
 
 <script>
   import Header from "./components/Header";
+  import {mapActions} from "vuex";
   export default {
     name: "app",
     components: {
       Header
+    },
+    mounted() {
+      this.setLogin();
+    },
+    methods: {
+      ...mapActions(["setLogin"])
     }
   }
 </script>

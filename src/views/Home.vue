@@ -1,25 +1,13 @@
 <template>
-    <div class="home">
-
-        <AddTodo/>
-        <FilterTodos/>
-        <Todos/>
+    <div>
+        <h1>Hello!</h1>
+        <h2>Welcome to Vinniehat's Todo Manager</h2>
     </div>
 </template>
 
 <script>
-    // @ is an alias to /src
-    import AddTodo from "../components/AddTodo";
-    import Todos from "../components/Todos";
-    import FilterTodos from "../components/FilterTodos";
-
     export default {
-        name: 'Home',
-        components: {
-            FilterTodos,
-            AddTodo,
-            Todos
-        }
+        name: "Home"
     }
 </script>
 

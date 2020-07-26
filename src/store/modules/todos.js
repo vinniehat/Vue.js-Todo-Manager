@@ -1,4 +1,4 @@
-import axios from "axios";
+import * as firebase from "firebase/app";
 
 const state = {
     todos: [],
@@ -12,66 +12,77 @@ const getters = {
 }
 
 const actions = {
-    async addTodo({commit}, name) {
-        await axios.post(`http://localhost:8081/todos?name=${name}`).then(response => {
-            commit('addTodo', response.data); // Calls the addTodo mutation
-        }).catch(error => {
-            console.log(error)
+    async addTodo(nullable, name) {
+        let todo = {
+            name,
+            completed: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }
+        await firebase
+            .firestore()
+            .collection("users")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("todos")
+            .add(todo)
+    },
+    async fetchTodos({commit}) {
+        var todosRef = await firebase
+            .firestore()
+            .collection("users")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("todos");
+        let todosCopy = []
+
+        todosRef.orderBy("createdAt")
+            .onSnapshot(snap => {
+            todosCopy = [];
+            snap.forEach(doc => {
+                var todo = doc.data();
+                todo.id = doc.id;
+                todosCopy.push(todo);
+            });
+            if(state.filter === "newestFirst") {
+                todosCopy = todosCopy.reverse();
+            }
+
+            commit('setTodos', todosCopy);
         });
 
     },
-    async fetchTodos({commit}) {
-        await axios.get("http://localhost:8081/todos").then(response => {
-            commit('setTodos', response.data);
-        })
-    },
-    async deleteTodo({commit}, todoID) {
-        await axios.post(`http://localhost:8081/todos/delete/${todoID}`).then(() => {
-            commit('deleteTodo', todoID);
-        }).catch(error => {
-            if (error) throw error;
-        })
+    async deleteTodo(nullable, todoID) {
+        await firebase
+            .firestore()
+            .collection("users")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("todos")
+            .doc(todoID)
+            .delete();
     },
     async filterTodos({commit}, selected) {
         commit('filterTodos', selected);
     },
-    async updateTodo({commit}, todo) {
-        await axios.put(`http://localhost:8081/todos?id=${todo.id}&?completed=${todo.completed}`).then(() => {
-            commit('updateTodo', todo);
-        }).catch(error => {
-            if(error) throw error;
-        })
+    async updateTodo(nullable, todo) {
+        await firebase
+            .firestore()
+            .collection("users")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("todos")
+            .doc(todo.id)
+            .update({
+                completed: todo.completed
+            });
     }
 
 }
 
 const mutations = {
-    async addTodo(state, todo) {
-        if (state.filter === "newestFirst") {
-            state.todos.unshift(todo);
-        } else {
-            state.todos.push(todo);
-        }
-    },
     async setTodos(state, todos) {
         state.todos = todos;
-    },
-    async deleteTodo(state, todoID) {
-        state.todos = state.todos.filter(todo => todo.id !== todoID);
     },
     async filterTodos(state, filter) {
         state.todos = state.todos.reverse();
         state.filter = filter;
     },
-    async updateTodo(state, todo) {
-        for (let i = 0; i < state.todos.length; i++) {
-            if (state.todos[i].id === todo.id) {
-                console.log('changed todo!');
-                state.todos[i] = todo;
-                return;
-            }
-        }
-    }
 }
 
 

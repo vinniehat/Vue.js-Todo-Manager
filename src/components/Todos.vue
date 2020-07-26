@@ -2,6 +2,7 @@
     <div>
 
         <div class="key">
+            <p>Double click to toggle completion</p>
             <span><span class="in-complete-box"></span> = Incomplete</span>
             <span><span class="complete-box"></span> = Complete</span>
         </div>
@@ -9,7 +10,7 @@
             <div @dblclick="toggleCompletion(todo)" v-for="todo in todos" v-bind:key="todo.id"
                  v-bind:class="{'is-complete':todo.completed, 'is-not-complete':!todo.completed}">
                 <h3>{{todo.name}}</h3>
-                <h5>Created: {{todo.date}}</h5>
+                <h5>Created: {{todo.createdAt.toDate({hour12: true})}}</h5>
                 <i @click="deleteTodo(todo.id)" class="fas fa-trash"></i>
             </div>
 
@@ -108,6 +109,10 @@
         margin-left: 15px;
         margin-bottom: 15px;
         left: 100px;
+    }
+
+    p {
+        padding-right: 15px;
     }
 
 </style>
