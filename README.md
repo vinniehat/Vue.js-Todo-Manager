@@ -4,6 +4,8 @@
 ```
 npm install
 ```
+Step 1: Open the main.js file
+Step 2: Replace firebaseConfig with the Firebase Configuration you get when creating a Firebase Database
 
 ### Compiles and hot-reloads for development
 ```
