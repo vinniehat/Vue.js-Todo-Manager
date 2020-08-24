@@ -3,16 +3,7 @@ import "firebase/firestore";
 
 // INITIALIZING FIREBASE
 
-var firebaseConfig = {
-    apiKey: "AIzaSyCgPRBM-FCN9AT4yrXNwH3xQK2R0lRiuf4",
-    authDomain: "vinniehats-todo-manager.firebaseapp.com",
-    databaseURL: "https://vinniehats-todo-manager.firebaseio.com",
-    projectId: "vinniehats-todo-manager",
-    storageBucket: "vinniehats-todo-manager.appspot.com",
-    messagingSenderId: "1010711437644",
-    appId: "1:1010711437644:web:e26e164a9b6414ebc4efe9",
-    measurementId: "G-9N3BFLY9FL"
-}
+var firebaseConfig = {};
 firebase.initializeApp(firebaseConfig);
 
 // IMPORTING THE REST OF THE THINGS THAT REQUIRE FIREBASE
